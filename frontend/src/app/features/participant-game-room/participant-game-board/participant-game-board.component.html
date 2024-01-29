@@ -1,0 +1,48 @@
+<h1>Game Board</h1>
+
+<nz-spin [nzSpinning]="isLoading">
+  <div class="board-container">
+    <div *ngFor="let row of rows" class="row">
+      <div
+        *ngFor="let col of rows"
+        [ngClass]="isHit(row, col) ? 'hit-cell' : 'cell'"
+        (click)="onCellClick(row, col)"
+      >
+        {{ getCellValue(row, col) }}
+      </div>
+    </div>
+  </div>
+
+  <div [hidden]="isWinningNumberSubmitted" class="button-container">
+    <nz-space>
+      <button
+        *nzSpaceItem
+        nz-button
+        nzSize="large"
+        nzType="default"
+        nzShape="round"
+        (click)="onRandom()"
+        [nzLoading]="isLoading"
+      >
+        Random
+      </button>
+      <button
+        *nzSpaceItem
+        nz-button
+        nzSize="large"
+        nzType="primary"
+        nzShape="round"
+        (click)="onSubmit()"
+        [disabled]="!isTableValid()"
+        [nzLoading]="isLoading"
+      >
+        Submit
+      </button>
+    </nz-space>
+  </div>
+</nz-spin>
+
+<bingo-dashboard
+  [roomIdentifier]="roomIdentifier"
+  (updateOpenedWinningNumbers)="onOpenWinningNumber($event)"
+></bingo-dashboard>

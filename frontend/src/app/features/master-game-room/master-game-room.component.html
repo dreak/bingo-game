@@ -1,0 +1,43 @@
+<h1>Game Room - Master</h1>
+
+<div class="button-container">
+  <button nz-button nzSize="large" nzType="link" (click)="onInvite()">Invite Participants</button>
+</div>
+
+<div>
+  <form nz-form [formGroup]="validateForm">
+    <nz-form-item>
+      <!-- <nz-form-label nzFor="winningNumber" nzRequired>
+        <span>Winning Number</span>
+      </nz-form-label> -->
+      <nz-form-control nzErrorTip="Please input winning number!">
+        <nz-input-number
+          nzSize="large"
+          [nzMin]="1"
+          [nzMax]="maxNumber"
+          nzPlaceHolder="Input a winning number"
+          id="winningNumber"
+          formControlName="winningNumber"
+          class="input-number"
+          inputmode="numeric"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+
+<div class="button-container">
+  <button
+    nz-button
+    nzSize="large"
+    nzType="primary"
+    nzShape="round"
+    (click)="onOpen()"
+    [disabled]="!validateForm.valid"
+    [nzLoading]="isLoading"
+  >
+    Open
+  </button>
+</div>
+
+<bingo-dashboard [roomIdentifier]="roomIdentifier"></bingo-dashboard>

@@ -1,0 +1,7 @@
+<div class="qrcode">
+  <nz-qrcode [nzValue]="inviteLink" nzLevel="H" [nzSize]="300"></nz-qrcode>
+</div>
+
+<div *nzModalFooter>
+  <button nz-button nzType="primary" (click)="onCopyLink()">Copy Link</button>
+</div>

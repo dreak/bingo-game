@@ -1,0 +1,36 @@
+<h1>Bingo Game</h1>
+
+<div>
+  <form nz-form [formGroup]="validateForm">
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please select game size!">
+        <nz-select
+          nzSize="large"
+          nzPlaceHolder="Select a game size"
+          id="gameSize"
+          formControlName="gameSize"
+        >
+          <nz-option
+            *ngFor="let gameSize of gameSizeList"
+            [nzValue]="gameSize"
+            [nzLabel]="gameSize + ' x ' + gameSize"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+
+<div class="button-container">
+  <button
+    nz-button
+    nzType="primary"
+    nzShape="round"
+    nzSize="large"
+    (click)="onCreate()"
+    [disabled]="!validateForm.valid"
+    [nzLoading]="isLoading"
+  >
+    Create
+  </button>
+</div>

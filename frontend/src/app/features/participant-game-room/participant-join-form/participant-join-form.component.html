@@ -1,0 +1,29 @@
+<h1>Game Room - Participant</h1>
+
+<form nz-form [formGroup]="validateForm">
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please input user name!">
+      <input
+        nz-input
+        nzSize="large"
+        placeholder="Pick a user name"
+        id="userName"
+        formControlName="userName"
+      />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<div class="button-container">
+  <button
+    nz-button
+    nzSize="large"
+    nzType="primary"
+    nzShape="round"
+    (click)="onJoin()"
+    [disabled]="!validateForm.valid"
+    [nzLoading]="isLoading"
+  >
+    Join
+  </button>
+</div>

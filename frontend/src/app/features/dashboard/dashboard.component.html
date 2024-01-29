@@ -1,0 +1,36 @@
+<h1>Dashboard</h1>
+
+<div *ngIf="winningNumberStatus$ | async as winningNumberStatus">
+  <div
+    *ngIf="
+      winningNumberStatus.openedWinningNumbers &&
+      winningNumberStatus.openedWinningNumbers.length > 0
+    "
+  >
+    <h2>Winning Number</h2>
+    <h3>{{ winningNumberStatus.openedWinningNumbers.join(', ') }}</h3>
+  </div>
+
+  <div
+    *ngIf="winningNumberStatus.userLinkedLines && winningNumberStatus.userLinkedLines.length > 0"
+  >
+    <h2>User Linked Lines</h2>
+    <h3
+      *ngFor="let userLinkedLines of winningNumberStatus.userLinkedLines.slice(0, 3); let i = index"
+      [ngClass]="{ 'font-large': i === 0, 'font-medium': i === 1, 'font-small': i === 2 }"
+    >
+      {{ userLinkedLines.userName }}: {{ userLinkedLines.linkedLines }}
+    </h3>
+  </div>
+</div>
+
+<div *ngIf="(winningNumberStatus$ | async) === null">
+  <h2>Ready Status</h2>
+  <p
+    *ngFor="let participantReadyStatus of participantsReadyStatus$ | async"
+    [ngClass]="participantReadyStatus.isReady ? 'ready-container' : 'not-ready-container'"
+  >
+    {{ participantReadyStatus.userName }} is
+    {{ participantReadyStatus.isReady ? 'ready' : 'not ready' }}
+  </p>
+</div>
