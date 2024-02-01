@@ -25,9 +25,9 @@ export function setupSwagger(app: INestApplication) {
 }
 
 export function getSwaggerDocUiEndpoint(port: number) {
-  return `Swagger API Docs UI:http://localhost:${port}/docs`;
+  return `Swagger API Docs UI: http://localhost:${port}/docs`;
 }
 
 export function getSwaggerDocEndpoint(port: number) {
-  return `Swagger API Docs:http://localhost:${port}/docs-json`;
+  return `Swagger API Docs: http://localhost:${port}/docs-json`;
 }

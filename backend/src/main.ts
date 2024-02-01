@@ -30,8 +30,10 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   await app.listen(configService.EnvConfig.PORT);
 
-  const logger = app.get(WINSTON_MODULE_NEST_PROVIDER).logger as Logger;
-  logger.info(getSwaggerDocUiEndpoint(configService.EnvConfig.PORT));
-  logger.info(getSwaggerDocEndpoint(configService.EnvConfig.PORT));
+  if (configService.EnvConfig.NODE_ENV === 'development') {
+    const logger = app.get(WINSTON_MODULE_NEST_PROVIDER).logger as Logger;
+    logger.info(getSwaggerDocUiEndpoint(configService.EnvConfig.PORT));
+    logger.info(getSwaggerDocEndpoint(configService.EnvConfig.PORT));
+  }
 }
 bootstrap();
