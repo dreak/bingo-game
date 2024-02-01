@@ -12,6 +12,7 @@ import { SocketManager } from 'src/socket/socket.manager';
 import { Logger } from 'winston';
 
 @WebSocketGateway({
+  path: '/bingo-socket',
   allowEIO3: true,
   cors: {
     origin: true,

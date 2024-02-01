@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { GameRoom } from '@repository/mysql/game-room/game-room.entity';
 import { GameRoomRepository } from '@repository/mysql/game-room/game-room.repository';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { CreateGameRoomDto } from 'src/game-room/dto/create-game-room.dto';
@@ -13,15 +14,13 @@ export class GameRoomService {
   ) {}
 
   async create(createGameRoomDto: CreateGameRoomDto) {
-    const newGameRoom = this.gameRoomRepo.create({
-      roomIdentifier: ulid(),
-      masterCode: ulid(),
-      gameSize: createGameRoomDto.gameSize
-    });
-
+    const newGameRoom = new GameRoom();
+    newGameRoom.roomIdentifier = ulid();
+    newGameRoom.masterCode = ulid();
+    newGameRoom.gameSize = createGameRoomDto.gameSize;
     await this.gameRoomRepo.save(newGameRoom);
 
-    this.logger.info(`New game room created: ${newGameRoom.roomIdentifier}`);
+    this.logger.info(`Created new game room, roomIdentifier: ${newGameRoom.roomIdentifier}`);
 
     return newGameRoom;
   }

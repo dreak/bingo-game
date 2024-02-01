@@ -45,7 +45,19 @@ export class GameWinningNumberNotificationService {
         userName: x.userName,
         linkedLines:
           x.bettingNumber !== null
-            ? this.winningNumberCalculator.calcLinkedLines(x.bettingNumber, gameRoom.gameSize)
+            ? this.winningNumberCalculator.calcLinkedLines(
+                x.bettingNumber,
+                'isHit',
+                gameRoom.gameSize
+              )
+            : 0,
+        userLinkedLines:
+          x.bettingNumber !== null
+            ? this.winningNumberCalculator.calcLinkedLines(
+                x.bettingNumber,
+                'isUserHit',
+                gameRoom.gameSize
+              )
             : 0
       };
       return userLinkedLinesStatus;

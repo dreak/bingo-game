@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { GameParticipant } from '@repository/mysql/game-participant/game-participant.entity';
 import { GameParticipantRepository } from '@repository/mysql/game-participant/game-participant.repository';
 import { GameRoomRepository } from '@repository/mysql/game-room/game-room.repository';
 import { GameWinningNumberRepository } from '@repository/mysql/game-winning-number/game-winning-number.repository';
@@ -9,9 +10,10 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { BettingWinningNumberChecker } from 'src/game-participant/betting-winning-number.checker';
 import { BetWinningNumbersDto } from 'src/game-participant/dto/bet-winning-numbers.dto';
 import { GameRoomInfo } from 'src/game-participant/dto/game-room-info.dto';
+import { HitWinningNumberDto } from 'src/game-participant/dto/hit-winning-number.dto';
 import { JoinGameRoomDto } from 'src/game-participant/dto/join-game-room.dto';
 import { GameParticipantNotificationService } from 'src/game-participant/game-participant-notification.service';
-import { GameParticipantValidator } from 'src/game-participant/game-participant.validator';
+import { GameWinningNumberNotificationService } from 'src/game-winning-number/game-winning-number-notification.service';
 import { ulid } from 'ulid';
 import { Logger } from 'winston';
 
@@ -24,14 +26,14 @@ export class GameParticipantService {
     private readonly gameWinningNumberRepo: GameWinningNumberRepository,
     private readonly gameParticipantNotificationService: GameParticipantNotificationService,
     private readonly bettingWinningNumberChecker: BettingWinningNumberChecker,
-    private readonly gameParticipantValidator: GameParticipantValidator
+    private readonly gameWinningNumberNotificationService: GameWinningNumberNotificationService
   ) {}
 
   /**
    * Join the game room as a participant
    * @param roomIdentifier Room identifier
    * @param joinGameRoomDto Join game room DTO
-   * @returns Game participant
+   * @returns
    */
   async joinGameRoom(roomIdentifier: string, joinGameRoomDto: JoinGameRoomDto) {
     const existingGameRoom = await this.gameRoomRepo.getByGameRoomIdentifier(roomIdentifier);
@@ -59,17 +61,14 @@ export class GameParticipantService {
       throw new InvalidParameterError('Game is already started');
     }
 
-    const newParticipant = this.gameParticipantRepo.create({
-      gameRoomId: existingGameRoom.gameRoomId,
-      userIdentifier: ulid(),
-      userName: joinGameRoomDto.userName
-    });
-
+    const newParticipant = new GameParticipant();
+    newParticipant.gameRoomId = existingGameRoom.gameRoomId;
+    newParticipant.userIdentifier = ulid();
+    newParticipant.userName = joinGameRoomDto.userName;
     await this.gameParticipantRepo.save(newParticipant);
 
     this.logger.info(`User ${newParticipant.userName} joined the game room ${roomIdentifier}`);
 
-    // Notify participants that new participant joined the game room
     await this.gameParticipantNotificationService.notifyParticipantsReadyStatusByGameRoom(
       existingGameRoom
     );
@@ -130,6 +129,44 @@ export class GameParticipantService {
     await this.gameParticipantNotificationService.notifyParticipantsReadyStatusByGameRoom(
       existingGameRoom
     );
+
+    return existingParticipant;
+  }
+
+  async hitWinningNumber(userIdentifier: string, hitWinningNumberDto: HitWinningNumberDto) {
+    const existingParticipant = await this.gameParticipantRepo.getByUserIdentifier(userIdentifier);
+
+    if (!existingParticipant) {
+      throw new NotFoundError('Participant not found');
+    }
+
+    const existingGameRoom = await this.gameRoomRepo.getByGameRoomId(
+      existingParticipant.gameRoomId
+    );
+
+    if (!existingGameRoom) {
+      throw new NotFoundError('Game room not found');
+    }
+
+    if (existingParticipant.bettingNumber === null) {
+      throw new InvalidParameterError('Bet winning numbers not found');
+    }
+
+    const betWinningNumber = existingParticipant.bettingNumber.find(
+      (x) =>
+        x.rowNumber === hitWinningNumberDto.rowNumber &&
+        x.columnNumber === hitWinningNumberDto.columnNumber
+    );
+
+    if (!betWinningNumber) {
+      throw new NotFoundError('Bet winning numbers not found');
+    }
+
+    betWinningNumber.isUserHit = !betWinningNumber.isUserHit;
+
+    await this.gameParticipantRepo.save(existingParticipant);
+
+    await this.gameWinningNumberNotificationService.notifyWinningNumberOpened(existingGameRoom);
 
     return existingParticipant;
   }

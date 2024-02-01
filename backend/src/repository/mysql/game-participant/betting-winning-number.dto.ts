@@ -18,4 +18,7 @@ export class BettingWinningNumberDto {
   @ApiHideProperty()
   @Exclude()
   isHit: boolean = false;
+  @ApiHideProperty()
+  @Exclude()
+  isUserHit: boolean = false;
 }
