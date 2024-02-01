@@ -2,5 +2,6 @@ import { Environment } from './environment.interface';
 
 export const environment: Environment = {
   production: true,
-  apiUrl: 'https://api-staging.hams-online.com/bingo'
+  apiUrl: 'http://localhost:8339/bingo',
+  socketUrl: 'http://localhost:8339'
 };
