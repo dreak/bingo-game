@@ -4,6 +4,7 @@ import { GameParticipant } from '@repository/mysql/game-participant/game-partici
 import { FeatureName } from '@shared/constants/feature-name.enum';
 import { BetWinningNumbersDto } from 'src/game-participant/dto/bet-winning-numbers.dto';
 import { GameRoomInfo } from 'src/game-participant/dto/game-room-info.dto';
+import { HitWinningNumberDto } from 'src/game-participant/dto/hit-winning-number.dto';
 import { JoinGameRoomDto } from 'src/game-participant/dto/join-game-room.dto';
 import { GameParticipantService } from 'src/game-participant/game-participant.service';
 
@@ -13,7 +14,7 @@ export class GameParticipantController {
   constructor(private readonly gameParticipantService: GameParticipantService) {}
 
   @Post('game-rooms/:roomIdentifier/join')
-  @ApiOperation({ summary: 'Join the game room as a participant' })
+  @ApiOperation({ summary: 'Join the game room' })
   @ApiResponse({ status: HttpStatus.CREATED, type: GameParticipant })
   async joinGameRoom(
     @Param('roomIdentifier') roomIdentifier: string,
@@ -30,6 +31,16 @@ export class GameParticipantController {
     @Body() betWinningNumbers: BetWinningNumbersDto
   ) {
     return this.gameParticipantService.betWinningNumbers(userIdentifier, betWinningNumbers);
+  }
+
+  @Put('game-participants/:userIdentifier/hit-winning-numbers')
+  @ApiOperation({ summary: 'Hit winning numbers' })
+  @ApiResponse({ status: HttpStatus.OK, type: GameParticipant })
+  async hitWinningNumbers(
+    @Param('userIdentifier') userIdentifier: string,
+    @Body() hitWinningNumberDto: HitWinningNumberDto
+  ) {
+    return this.gameParticipantService.hitWinningNumber(userIdentifier, hitWinningNumberDto);
   }
 
   @Get('game-participants/:userIdentifier/info')

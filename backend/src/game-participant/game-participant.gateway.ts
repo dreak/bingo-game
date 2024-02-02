@@ -12,7 +12,7 @@ import { GameParticipantNotificationService } from 'src/game-participant/game-pa
 import { Logger } from 'winston';
 
 @WebSocketGateway({
-  path: '/bingo/socket.io/',
+  path: '/bingo-socket',
   allowEIO3: true,
   cors: {
     origin: true,

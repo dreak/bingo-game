@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  mysql:
+    container_name: bingo-game-mysql
+    image: mysql:8.0.36
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 5s
+      retries: 10
+  backend:
+    container_name: bingo-game-backend
+    build: ./backend
+    image: bingo-game-backend:latest
+    ports:
+      - 8339:8339
+    environment:
+      NODE_ENV: production
+      MYSQL_HOST: bingo-game-mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER_ID: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: bingo_game
+    depends_on:
+      mysql:
+        condition: service_healthy
+  frontend:
+    container_name: bingo-game-frontend
+    build: ./frontend
+    image: bingo-game-frontend:latest
+    ports:
+      - 4200:80
+    depends_on:
+      - backend

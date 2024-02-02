@@ -13,12 +13,20 @@ export class WinningNumberCalculator {
    * @param gameSize Game size
    * @returns Linked lines
    */
-  calcLinkedLines(bettingWinningNumbersDto: BettingWinningNumberDto[], gameSize: number) {
+  calcLinkedLines(
+    bettingWinningNumbersDto: BettingWinningNumberDto[],
+    hitColumnName: string,
+    gameSize: number
+  ) {
     let linkedLines = 0;
 
-    linkedLines += this.calcHorizontalLinkedLines(bettingWinningNumbersDto, gameSize);
-    linkedLines += this.calcVerticalLinkedLines(bettingWinningNumbersDto, gameSize);
-    linkedLines += this.calcDiagonalLinkedLines(bettingWinningNumbersDto, gameSize);
+    linkedLines += this.calcHorizontalLinkedLines(
+      bettingWinningNumbersDto,
+      hitColumnName,
+      gameSize
+    );
+    linkedLines += this.calcVerticalLinkedLines(bettingWinningNumbersDto, hitColumnName, gameSize);
+    linkedLines += this.calcDiagonalLinkedLines(bettingWinningNumbersDto, hitColumnName, gameSize);
 
     return linkedLines;
   }
@@ -29,7 +37,11 @@ export class WinningNumberCalculator {
    * @param gameSize Game size
    * @returns Linked lines
    */
-  calcHorizontalLinkedLines(bettingWinningNumbersDto: BettingWinningNumberDto[], gameSize: number) {
+  calcHorizontalLinkedLines(
+    bettingWinningNumbersDto: BettingWinningNumberDto[],
+    hitColumnName: string,
+    gameSize: number
+  ) {
     let linkedLines = 0;
 
     for (let row = 1; row <= gameSize; row++) {
@@ -42,7 +54,7 @@ export class WinningNumberCalculator {
         );
 
         // If the cell is not found or not hit, then this row will not have a linked line, so break to the next row
-        if (!selectedWinningNumber || !selectedWinningNumber.isHit) {
+        if (!selectedWinningNumber || !selectedWinningNumber[hitColumnName]) {
           break;
         }
 
@@ -64,7 +76,11 @@ export class WinningNumberCalculator {
    * @param gameSize Game size
    * @returns Linked lines
    */
-  calcVerticalLinkedLines(bettingWinningNumbersDto: BettingWinningNumberDto[], gameSize: number) {
+  calcVerticalLinkedLines(
+    bettingWinningNumbersDto: BettingWinningNumberDto[],
+    hitColumnName: string,
+    gameSize: number
+  ) {
     let linkedLines = 0;
 
     for (let col = 1; col <= gameSize; col++) {
@@ -77,7 +93,7 @@ export class WinningNumberCalculator {
         );
 
         // If the cell is not found or not hit, then this column will not have a linked line, so break to the next column
-        if (!selectedWinningNumber || !selectedWinningNumber.isHit) {
+        if (!selectedWinningNumber || !selectedWinningNumber[hitColumnName]) {
           break;
         }
 
@@ -99,7 +115,11 @@ export class WinningNumberCalculator {
    * @param gameSize Game size
    * @returns Linked lines
    */
-  calcDiagonalLinkedLines(bettingWinningNumbersDto: BettingWinningNumberDto[], gameSize: number) {
+  calcDiagonalLinkedLines(
+    bettingWinningNumbersDto: BettingWinningNumberDto[],
+    hitColumnName: string,
+    gameSize: number
+  ) {
     let leftDiagonalCount = 0;
     let rightDiagonalCount = 0;
 
@@ -108,7 +128,7 @@ export class WinningNumberCalculator {
         (x) => x.rowNumber === i && x.columnNumber === i
       );
 
-      if (leftSelectedWinningNumber && leftSelectedWinningNumber.isHit) {
+      if (leftSelectedWinningNumber && leftSelectedWinningNumber[hitColumnName]) {
         leftDiagonalCount++;
       }
 

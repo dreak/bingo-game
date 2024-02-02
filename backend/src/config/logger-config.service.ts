@@ -5,8 +5,6 @@ import { consoleFormat } from 'winston-console-format';
 
 @Injectable()
 export class LoggerConfigService implements WinstonModuleOptionsFactory {
-  constructor() {}
-
   createWinstonModuleOptions() {
     const options: winston.LoggerOptions = {};
 
