@@ -7,9 +7,10 @@ This is a simple bingo game that can be played by multiple players.
 First, clone the repository, then go into your favorite terminal
 
 ```bash
-
+docker compose up
 ```
 
+After that, open your browser and go to `http://localhost:4200`
 
 ## How to play
 
